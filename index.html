@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tactile Sensors as a Substitute for Wrist Cameras</title>
+  <meta name="description" content="Tactile Sensors Are an Effective Substitute for Wrist Cameras in Contact-Rich or Occluded Manipulation — project page with videos, results, and code.">
+
+  <!-- Social preview (update og:image / og:url once the site is live) -->
+  <meta property="og:title" content="Tactile Sensors Are an Effective Substitute for Wrist Cameras in Contact-Rich or Occluded Manipulation">
+  <meta property="og:description" content="Tactile-augmented policies vs. vision-only policies across six manipulation tasks, with wrist-camera availability varied.">
+  <meta property="og:image" content="assets/images/hero_poster.webp">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Tab icon: square TRI emblem. Falls back to the browser default until media/tri_icon.png exists. -->
+  <link rel="icon" href="media/tri_icon.png" type="image/png">
+  <link rel="apple-touch-icon" href="media/tri_icon.png">
+  <link rel="stylesheet" href="assets/css/style.css?v=11">
+  <script src="assets/js/main.js?v=2" defer></script>
+</head>
+
+<body>
+
+<nav class="topnav" aria-label="Sections">
+  <div class="topnav-inner">
+    <a class="brand" href="#top">Tactile vs. Wrist Camera</a>
+    <ul>
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#method">Method</a></li>
+      <li><a href="#tasks">Tasks</a></li>
+      <li><a href="#results">Results</a></li>
+      <li><a href="#hardware">Hardware</a></li>
+      <li><a href="#citation">Citation</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main id="top">
+
+  <!-- 01 · HERO ======================================================= -->
+  <header class="hero">
+    <div class="container narrow center">
+      <p class="venue">CoRL 2026 · 3rd Workshop on Dexterous Manipulation</p>
+      <h1>Tactile Sensors Are an Effective Substitute for Wrist Cameras in Contact-Rich or Occluded Manipulation</h1>
+
+      <p class="authors">
+        <!-- Add href to personal/lab pages; keep paper author order. Add <sup> marks only if affiliations differ or for equal contribution. -->
+        <a href="https://annieyaj.github.io/">Aijia Yang</a>,
+        <a href="https://scholar.google.com/citations?user=mYwF_I4AAAAJ&hl=en">Arsh Tangri</a>,
+        <a href="https://zakharos.github.io/">Sergey Zakharov</a>,
+        <a href="https://krrish94.github.io/">Krishna Murthy Jatavallabhula</a>
+      </p>
+      <p class="affiliations">Toyota Research Institute</p>
+      <a class="affil-logo" href="https://www.tri.global/" aria-label="Toyota Research Institute">
+        <img src="media/tri_logo.png" alt="Toyota Research Institute logo" onerror="this.parentElement.hidden = true">
+      </a>
+
+      <div class="link-buttons">
+        <!-- Hide any button whose resource is not public yet (add the "hidden" attribute). -->
+        <a class="btn" href="assets/paper/paper.pdf">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l5 5v15H6z M14 2v6h6" /></svg>Paper
+        </a>
+        <a class="btn" href="#">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4z M8 9h8 M8 13h8 M8 17h5" /></svg>arXiv
+        </a>
+        <a class="btn" href="#">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v14H3z M10 9l5 3-5 3z" /></svg>Video
+        </a>
+        <a class="btn" href="#">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7l-5 5 5 5 M16 7l5 5-5 5 M14 4l-4 16" /></svg>Code
+        </a>
+      </div>
+    </div>
+
+    <div class="container">
+      <figure class="hero-video">
+        <div class="media" data-label="Hero montage · 20–35 s, muted loop">
+          <video data-src="media/hero.mp4" poster="assets/images/hero_poster.webp"
+                 muted loop playsinline autoplay data-eager
+                 aria-label="Montage: marker in bag, plug insertion, whiteboard wiping, and tactile feedback"></video>
+        </div>
+        <button class="play-toggle" type="button" data-target-video aria-label="Pause video">Pause</button>
+      </figure>
+
+      <p class="takeaway">
+        Finger-mounted tactile sensing lets a policy recover the performance advantage of wrist cameras using external
+        vision and touch alone.
+      </p>
+    </div>
+  </header>
+
+  <!-- 02 · KEY FINDINGS ================================================ -->
+  <section id="overview" class="section">
+    <div class="container">
+      <div class="stat-grid">
+        <!-- Values from the abstract: percentage-point differences on the three contact-rich tasks (T4–T6). -->
+        <div class="stat vision">
+          <div class="stat-value"><span>+18.3–28.3</span><span class="unit">pp</span></div>
+          <div class="stat-task">Adding a wrist camera</div>
+          <div class="stat-compare">Over external vision alone</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value"><span>+31.7–60.0</span><span class="unit">pp</span></div>
+          <div class="stat-task">Adding tactile sensing instead</div>
+          <div class="stat-compare">Over external vision alone</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value"><span>3 / 3</span></div>
+          <div class="stat-task">Tasks where touch beats the wrist camera</div>
+          <div class="stat-compare">Higher observed success than vision-only policies with wrist cameras; significant on two under Holm-corrected tests</div>
+        </div>
+      </div>
+      <p class="stat-note">Success-rate differences in percentage points (pp) on three contact-rich tasks, with demonstrations and learning procedure held fixed.</p>
+    </div>
+
+    <!-- 03 · ABSTRACT & CONTRIBUTIONS ================================== -->
+    <div class="container narrow">
+      <h2>Abstract</h2>
+      <p class="abstract">
+        Learned manipulation policies often rely on wrist-mounted cameras for close-range visual feedback that complements
+        external views of the workspace. However, contact-rich manipulation requires establishing and maintaining contacts
+        that can remain hidden even from wrist cameras. Tactile sensors mounted on fingers can reliably and directly measure
+        contact, without needing visual access. In this work, we show that this feedback enables policies to recover the
+        performance advantage of wrist cameras using external vision and touch alone. Our approach incorporates two low-cost
+        tactile arrays into a visuotactile ACT policy, without wrist images during training or deployment. We evaluate six
+        real-world tasks spanning placement, insertion, occluded retrieval, and sustained-contact tool use. On three
+        contact-rich tasks, we independently vary wrist-camera and tactile availability while keeping the demonstrations
+        and learning procedure fixed. Adding wrist cameras improves success by 18.3–28.3 percentage points over external
+        vision alone. Adding tactile sensing instead improves success by 31.7–60.0 percentage points and yields higher
+        observed success than vision-only policies with wrist cameras on all three tasks, with significant advantages on
+        two under Holm-corrected tests. These results support finger-mounted tactile sensing as an effective alternative
+        to wrist cameras in the evaluated contact-rich settings.
+      </p>
+    </div>
+
+    <div class="container">
+      <h3 class="center sub">Contributions</h3>
+      <div class="card-grid three">
+        <article class="card">
+          <div class="card-num">1</div>
+          <h4>Low-cost tactile integration</h4>
+          <p>Two FlexiTac tactile arrays built into compliant gripper fingers, one per finger.</p>
+        </article>
+        <article class="card">
+          <div class="card-num">2</div>
+          <h4>Controlled modality comparison</h4>
+          <p>Vision-only and tactile-augmented policies compared across six tasks, with wrist-camera availability explicitly varied.</p>
+        </article>
+        <article class="card">
+          <div class="card-num">3</div>
+          <h4>When touch matters</h4>
+          <p>Evidence for where tactile input helps most (occlusion, insertion, and sustained contact) and where it does not.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 · METHOD ====================================================== -->
+  <section id="method" class="section alt">
+    <div class="container">
+      <h2 class="center">Method</h2>
+      <p class="lede narrow-text">
+        Camera images and left/right tactile maps are encoded separately, fused into one multimodal feature, and passed to an
+        action-chunking transformer policy that outputs a short sequence of robot actions.
+      </p>
+
+      <figure class="figure setup-figure">
+        <div class="media photo" data-label="Station setup photo">
+          <img src="media/station.png" alt="Robot arm on a tabletop with scene, egocentric, and wrist cameras and tactile pads on the gripper" loading="lazy">
+        </div>
+        <figcaption>
+          <strong>Station setup.</strong> Scene and egocentric cameras observe the workspace; the wrist camera is
+          included or removed depending on the policy configuration. Tactile pads on both fingers provide contact sensing.
+        </figcaption>
+      </figure>
+
+      <!-- Stand-in diagram. Replace with <img src="assets/images/system_overview.svg"> once the final figure exists. -->
+      <figure class="pipeline" aria-label="Policy pipeline diagram">
+        <div class="pl-inputs">
+          <div class="pl-branch vision">
+            <div class="pl-node input"><strong>RGB observations</strong><small>external cameras ± wrist camera</small></div>
+            <div class="pl-arrow"></div>
+            <div class="pl-node enc"><strong>Visual encoder</strong><small>ResNet-18</small></div>
+          </div>
+          <div class="pl-branch tactile">
+            <div class="pl-node input"><strong>Tactile observations</strong><small>left + right finger arrays</small></div>
+            <div class="pl-arrow"></div>
+            <div class="pl-node enc"><strong>Tactile encoder</strong><small>ResNet-18</small></div>
+          </div>
+        </div>
+        <div class="pl-arrow merge"></div>
+        <div class="pl-node"><strong>Multimodal features</strong></div>
+        <div class="pl-arrow"></div>
+        <div class="pl-node policy"><strong>ACT policy</strong><small>transformer</small></div>
+        <div class="pl-arrow"></div>
+        <div class="pl-node"><strong>Action chunk</strong><small>7-DoF</small></div>
+        <div class="pl-arrow"></div>
+        <div class="pl-node out"><strong>Robot</strong></div>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 05 · TASKS ======================================================= -->
+  <section id="tasks" class="section">
+    <div class="container">
+      <h2 class="center">Tasks</h2>
+      <p class="lede narrow-text">
+        Six real-robot tasks. Three are contact-rich or visually occluded (T4–T6) and are the focus of this study; three
+        supporting tasks (T1–T3) cover tight-clearance placement, rigid block and sponge placement, and straw insertion. Videos in this section show
+        teleoperated demonstrations collected for training.
+      </p>
+
+      <div class="task-feature">
+        <div class="media" data-label="T4 · Marker in bag">
+          <video data-src="media/task4_dc.mp4" muted loop playsinline></video>
+        </div>
+        <div class="task-text">
+          <span class="task-id">T4</span>
+          <h3>Marker in bag</h3>
+          <p>A marker is hidden inside an opaque bag, so no camera can see the grasp. The policy has to find and secure it by touch.</p>
+          <span class="tag">Occlusion</span>
+        </div>
+      </div>
+
+      <div class="task-feature reverse">
+        <div class="media" data-label="T5 · Plug insertion">
+          <video data-src="media/task5_dc.mp4" muted loop playsinline></video>
+        </div>
+        <div class="task-text">
+          <span class="task-id">T5</span>
+          <h3>Plug insertion</h3>
+          <p>Aligning a plug with a socket within millimeters. In-hand pose and contact forces matter more than what the camera sees.</p>
+          <span class="tag">Contact-rich</span>
+        </div>
+      </div>
+
+      <div class="task-feature">
+        <div class="media" data-label="T6 · Whiteboard wiping">
+          <video data-src="media/task6_dc.mp4" muted loop playsinline></video>
+        </div>
+        <div class="task-text">
+          <span class="task-id">T6</span>
+          <h3>Whiteboard wiping</h3>
+          <p>Keeping steady contact with a surface while wiping. Too little pressure leaves marks; too much stalls the motion.</p>
+          <span class="tag">Sustained contact</span>
+        </div>
+      </div>
+
+      <div class="card-grid three task-small">
+        <figure>
+          <div class="media" data-label="T1 · Tight-clearance placement">
+            <video data-src="media/task1_dc.mp4" muted loop playsinline></video>
+          </div>
+          <figcaption><span class="task-id">T1</span> Tight-clearance placement</figcaption>
+        </figure>
+        <figure>
+          <div class="media" data-label="T2 · Rigid block &amp; sponge placement">
+            <video data-src="media/task2_dc.mp4" muted loop playsinline></video>
+          </div>
+          <figcaption><span class="task-id">T2</span> Rigid block &amp; sponge placement</figcaption>
+        </figure>
+        <figure>
+          <div class="media" data-label="T3 · Straw insertion">
+            <video data-src="media/task3_dc.mp4" muted loop playsinline></video>
+          </div>
+          <figcaption><span class="task-id">T3</span> Straw insertion</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 · QUANTITATIVE RESULTS ======================================= -->
+  <section id="results" class="section alt">
+    <div class="container">
+      <h2 class="center">Results</h2>
+
+      <figure class="figure">
+        <div class="table-wrap">
+          <table class="results-table">
+            <thead>
+              <tr><th>Task</th><th class="rel">Tactile relevance</th><th class="num"><span class="swatch vision"></span>Vision only</th><th class="num"><span class="swatch tactile"></span>Vision + tactile</th><th class="num">Δ</th></tr>
+            </thead>
+            <tbody>
+              <tr class="group"><td colspan="5">Wrist camera on</td></tr>
+              <tr><td><span class="task-id">T1</span>Tight-clearance placement</td><td class="rel">Precise contact</td><td class="num">50.0%</td><td class="num">63.3%</td><td class="num delta">+13.3 pp</td></tr>
+              <tr><td><span class="task-id">T2a</span>Rigid block placement</td><td class="rel">Low / rigid contact</td><td class="num">60.0%</td><td class="num">60.0%</td><td class="num delta zero">0.0 pp</td></tr>
+              <tr><td><span class="task-id">T2b</span>Sponge placement</td><td class="rel">Compliance / deformation</td><td class="num">76.0%</td><td class="num">88.0%</td><td class="num delta">+12.0 pp</td></tr>
+              <tr><td><span class="task-id">T3</span>Straw insertion</td><td class="rel">Contact / insertion</td><td class="num">43.3%</td><td class="num">65.0%</td><td class="num delta">+21.7 pp</td></tr>
+              <tr class="group"><td colspan="5">Wrist camera off</td></tr>
+              <tr><td><span class="task-id">T4</span>Marker in bag</td><td class="rel">Controlled tactile isolation</td><td class="num">21.7%</td><td class="num">81.7%</td><td class="num delta">+60.0 pp</td></tr>
+              <tr><td><span class="task-id">T5</span>Plug insertion</td><td class="rel">Alignment / insertion</td><td class="num">15.0%</td><td class="num">46.7%</td><td class="num delta">+31.7 pp</td></tr>
+              <tr><td><span class="task-id">T6</span>Whiteboard wiping</td><td class="rel">Tool manipulation</td><td class="num">21.7%</td><td class="num">71.7%</td><td class="num delta">+50.0 pp</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <figcaption>
+          <strong>Observed success rates.</strong> Δ is the difference in percentage points between the vision + tactile
+          and vision-only policies. All policies use the scene and egocentric cameras.
+        </figcaption>
+      </figure>
+
+      <figure class="figure gain-figure">
+        <div class="media figure-media" data-label="Tactile gain by task">
+          <img src="media/gain_by_task.png" alt="Estimated tactile gain in percentage points for each task, with the wrist camera on and off. With the wrist camera off: Task 4 +58.1, Task 5 +30.6, Task 6 +48.4. With the wrist camera on: Task 1 +12.5, Task 2a +0.0, Task 2b +11.1, Task 3 +21.0, Task 4 +21.0, Task 5 +16.1, Task 6 +17.7." loading="lazy">
+        </div>
+        <figcaption>
+          <strong>Estimated tactile gain by task.</strong> Points show the estimated gain from adding tactile sensing, in
+          percentage points, and bars show 95% confidence intervals. Estimates can differ slightly from the observed differences
+          in the table above. Tasks 1–3 are evaluated with the wrist camera on; Tasks 4–6 with the wrist camera both on and off.
+        </figcaption>
+      </figure>
+
+      <div class="results-split">
+        <div>
+          <h3 class="sub">Policy configurations</h3>
+          <table class="conditions">
+            <thead>
+              <tr><th>Policy</th><th>Wrist camera</th><th>Tactile</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="swatch vision"></span>Vision-only, no wrist</td><td class="off">Off</td><td class="off">Off</td></tr>
+              <tr><td><span class="swatch tactile"></span>Vision + tactile, no wrist</td><td class="off">Off</td><td class="on">On</td></tr>
+              <tr><td><span class="swatch vision dark"></span>Vision-only, wrist</td><td class="on">On</td><td class="off">Off</td></tr>
+              <tr><td><span class="swatch tactile dark"></span>Vision + tactile, wrist</td><td class="on">On</td><td class="on">On</td></tr>
+            </tbody>
+          </table>
+          <p class="small">
+            Every configuration uses the scene and egocentric cameras.
+            “Vision-only” does not mean “no camera.” Tasks 1–3 are evaluated in the wrist-on configurations only.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="sub">What the results show</h3>
+          <ul class="findings">
+            <li>On the three contact-rich tasks, adding a wrist camera improves success by 18.3–28.3 pp over external vision alone.</li>
+            <li>Adding tactile sensing instead improves success by 31.7–60.0 pp.</li>
+            <li>Vision + tactile policies without a wrist camera achieve higher observed success than vision-only policies with a wrist camera on all three tasks, with significant advantages on two under Holm-corrected tests.</li>
+            <li>On the placement tasks (T1–T2), tactile gains are small (0 to +13.3 pp), and their 95% confidence intervals include zero.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 · QUALITATIVE COMPARISONS ===================================== -->
+  <section id="comparisons" class="section">
+    <div class="container">
+      <h2 class="center">Policy comparisons</h2>
+      <p class="lede narrow-text">
+        Matched autonomous rollouts with the wrist camera off. Each video shows the scene camera, the egocentric camera, and
+        the live left and right tactile heatmaps. Tactile signals are recorded in every trial for visualization, but only the
+        vision + tactile policy receives them as input. These clips illustrate typical behavior; the success rates above are
+        the evidence. All clips play in real time.
+      </p>
+
+      <article class="compare" data-compare>
+        <header class="compare-head">
+          <h3><span class="task-id">T4</span> Marker in bag</h3>
+          <span class="condition">Both policies: no wrist camera</span>
+          <button class="btn small sync-btn" type="button">↻ Replay in sync</button>
+        </header>
+        <div class="compare-pair">
+          <figure>
+            <div class="media natural" data-label="T4 · vision-only trial">
+              <video data-src="media/t4_vision.mp4" muted loop playsinline></video>
+            </div>
+            <figcaption><span class="pill vision">Vision only</span> <span class="outcome fail">✗ Failure</span></figcaption>
+          </figure>
+          <figure>
+            <div class="media natural" data-label="T4 · vision + tactile trial">
+              <video data-src="media/t4_tactile.mp4" muted loop playsinline></video>
+            </div>
+            <figcaption><span class="pill tactile">Vision + tactile</span> <span class="outcome success">✓ Success</span></figcaption>
+          </figure>
+        </div>
+        <p class="compare-note">Without vision inside the bag, the vision-only policy closes on empty fabric. With tactile feedback, the policy detects contact with the object and adjusts its grasp before lifting.</p>
+      </article>
+
+      <article class="compare" data-compare>
+        <header class="compare-head">
+          <h3><span class="task-id">T5</span> Plug insertion</h3>
+          <span class="condition">Both policies: no wrist camera</span>
+          <button class="btn small sync-btn" type="button">↻ Replay in sync</button>
+        </header>
+        <div class="compare-pair">
+          <figure>
+            <div class="media natural" data-label="T5 · vision-only trial">
+              <video data-src="media/t5_vision.mp4" muted loop playsinline></video>
+            </div>
+            <figcaption><span class="pill vision">Vision only</span> <span class="outcome fail">✗ Failure</span></figcaption>
+          </figure>
+          <figure>
+            <div class="media natural" data-label="T5 · vision + tactile trial">
+              <video data-src="media/t5_tactile.mp4" muted loop playsinline></video>
+            </div>
+            <figcaption><span class="pill tactile">Vision + tactile</span> <span class="outcome success">✓ Success</span></figcaption>
+          </figure>
+        </div>
+        <p class="compare-note">The vision-only policy stalls against the socket face. With tactile feedback, the policy senses the misalignment and corrects it before completing the insertion.</p>
+      </article>
+
+      <article class="compare" data-compare>
+        <header class="compare-head">
+          <h3><span class="task-id">T6</span> Whiteboard wiping</h3>
+          <span class="condition">Both policies: no wrist camera</span>
+          <button class="btn small sync-btn" type="button">↻ Replay in sync</button>
+        </header>
+        <div class="compare-pair">
+          <figure>
+            <div class="media natural" data-label="T6 · vision-only trial">
+              <video data-src="media/t6_vision.mp4" muted loop playsinline></video>
+            </div>
+            <figcaption><span class="pill vision">Vision only</span> <span class="outcome fail">✗ Failure</span></figcaption>
+          </figure>
+          <figure>
+            <div class="media natural" data-label="T6 · vision + tactile trial">
+              <video data-src="media/t6_tactile.mp4" muted loop playsinline></video>
+            </div>
+            <figcaption><span class="pill tactile">Vision + tactile</span> <span class="outcome success">✓ Success</span></figcaption>
+          </figure>
+        </div>
+        <p class="compare-note">The vision-only policy loses contact partway through the stroke. With tactile feedback, the policy keeps steady pressure across the full surface.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 09 · HARDWARE & IMPLEMENTATION =================================== -->
+  <section id="hardware" class="section">
+    <div class="container">
+      <h2 class="center">Hardware &amp; implementation</h2>
+
+      <div class="hw-feature">
+        <figure class="hw-photo">
+          <div class="media" data-label="Gripper close-up">
+            <img src="media/gripper_closeup.jpg" alt="Gripper with flexible tactile sensors on both fingers and a ZED Mini wrist camera mounted above" loading="lazy">
+          </div>
+          <figcaption>Tactile fingers and wrist camera</figcaption>
+        </figure>
+        <figure class="hw-photo">
+          <div class="media cad" data-label="Finger CAD">
+            <img src="media/gripper_cad.png" alt="CAD render of the 3D-printed gripper finger" loading="lazy">
+          </div>
+          <figcaption>Finger design (CAD)</figcaption>
+        </figure>
+        <div class="hw-text">
+          <h3>Tactile gripper</h3>
+          <p>Each finger of the parallel-jaw gripper carries a flexible FlexiTac tactile sensor on a 3D-printed fingertip,
+            giving the policy a 32×16 pressure map from both sides of the grasp. A ZED Mini stereo camera mounted above
+            the gripper serves as the wrist camera in the wrist-on configurations.</p>
+        </div>
+      </div>
+
+      <div class="card-grid three">
+        <article class="card">
+          <h4>Robot and workcell</h4>
+          <p>A single robot arm operates on a tabletop workspace, observed by a scene camera, an egocentric camera, and an optional wrist camera.</p>
+        </article>
+        <article class="card">
+          <h4>Policy</h4>
+          <p>Image and tactile streams are encoded separately and fused as input to an action-chunking transformer (ACT), trained by imitation on teleoperated demonstrations.</p>
+        </article>
+        <article class="card">
+          <h4>Training and evaluation</h4>
+          <p>Demonstrations are collected by teleoperation. Every policy configuration is evaluated on the same set of trials per task.</p>
+        </article>
+      </div>
+      <p class="center small">Full implementation details are in the <a href="assets/paper/paper.pdf">paper</a>.</p>
+    </div>
+  </section>
+
+  <!-- 10 · CITATION ==================================================== -->
+  <section id="citation" class="section alt">
+    <div class="container narrow">
+      <h2>Citation</h2>
+      <div class="bibtex">
+        <button class="btn small copy-btn" type="button" data-copy="#bibtex-text">Copy</button>
+<pre id="bibtex-text"><code>@inproceedings{yang2026tactile,
+  title     = {Tactile Sensors Are an Effective Substitute for Wrist Cameras
+               in Contact-Rich or Occluded Manipulation},
+  author    = {Yang, Aijia and Tangri, Arsh and Zakharov, Sergey
+               and Jatavallabhula, Krishna Murthy},
+  booktitle = {3rd Workshop on Dexterous Manipulation,
+               Conference on Robot Learning (CoRL)},
+  year      = {2026}
+}</code></pre>
+      </div>
+
+      <h3 class="sub">Acknowledgments</h3>
+      <p>We thank our colleagues at Toyota Research Institute for their support and helpful discussions.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container narrow center small">
+    <p>Page layout inspired by <a href="https://nerfies.github.io/">Nerfies</a>.</p>
+  </div>
+</footer>
+
+</body>
+</html>
